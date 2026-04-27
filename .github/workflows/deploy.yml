@@ -30,7 +30,12 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    # 3. Docker 이미지 빌드 및 ECR 푸시 (Dockerfile 이용)
+    # 3. .env 파일 생성 (GitHub Secret 사용)
+    - name: Create .env file
+      run: |
+        echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" > .env
+
+    # 4. Docker 이미지 빌드 및 ECR 푸시 (Dockerfile 이용)
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
