@@ -7,7 +7,8 @@ function App() {
   const callBackend = async () => {
     // [중요] 아래 주소를 본인이 만든 ALB의 DNS 주소로 반드시 변경하세요!
     // 예시: const albAddress = "http://my-alb-123456789.ap-northeast-2.elb.amazonaws.com";
-    const albAddress = "http://ec2-16-184-49-52.ap-northeast-2.compute.amazonaws.com"; 
+    
+    const albAddress = process.env.REACT_APP_API_BASE_URL || "http://localhost:8080"; // 환경변수에서 ALB 주소를 읽어오거나, 기본값으로 localhost 사용
     
     setMessage('호출 중...');
     setError(null);
