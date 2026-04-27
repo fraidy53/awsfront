@@ -62,7 +62,7 @@ jobs:
             # 새 이미지 Pull 및 실행 (80포트로 서비스)
             sudo docker pull ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
             sudo docker run -d --name frontend-app -p 80:80 \
-              -e REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} \
+              -e REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }} \
               ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
