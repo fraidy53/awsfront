@@ -50,15 +50,18 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         envs: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
         script: |
-          aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-          
-          # 기존 컨테이너 중지 및 삭제
-          sudo docker stop frontend-app || true
-          sudo docker rm frontend-app || true
-          
-          # 새 이미지 Pull 및 실행 (80포트로 서비스)
-          sudo docker pull ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
-          sudo docker run -d --name frontend-app -p 80:80 ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
+            aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+
+            # 80번 포트를 점유한 프로세스 강제 종료 (자동화)
+            sudo fuser -k 80/tcp || true
+
+            # 기존 컨테이너 중지 및 삭제
+            sudo docker stop frontend-app || true
+            sudo docker rm frontend-app || true
+
+            # 새 이미지 Pull 및 실행 (80포트로 서비스)
+            sudo docker pull ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
+            sudo docker run -d --name frontend-app -p 80:80 ${{ steps.login-ecr.outputs.registry }}/aws-lab-frontend:latest
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
